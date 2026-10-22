@@ -1,23 +1,23 @@
 {
-    "configurations": [
-        {
-            "name": "STM32",
-            "includePath": [
-                "${workspaceFolder}/include",
-                "${workspaceFolder}/cmsis/Include",
-                "${workspaceFolder}/cmsis/Core/Include"
-            ],
-            "defines": [
-                "STM32L073xx"
-            ],
-            "compilerPath": "/Users/matthew14786/Library/xPacks/@xpack-dev-tools/arm-none-eabi-gcc/15.2.1-1.1.1/.content/bin/arm-none-eabi-gcc",
-            "compilerArgs": [
-                "-mcpu=cortex-m0plus",
-                "-mthumb"
-            ],
-            "cStandard": "gnu11",
-            "intelliSenseMode": "gcc-arm"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "STM32",
+      "includePath": [
+        "cmsis/Core/Include",
+        "cmsis/Include",
+        "include"
+      ],
+      "defines": [
+        "STM32L073xx"
+      ],
+      "compilerPath": "/Users/matthew14786/Library/xPacks/@xpack-dev-tools/arm-none-eabi-gcc/15.2.1-1.1.1/.content/bin/arm-none-eabi-gcc",
+      "compilerArgs": [
+        "-mcpu=cortex-m0plus",
+        "-mthumb"
+      ],
+      "cStandard": "gnu11",
+      "intelliSenseMode": "gcc-arm"
+    }
+  ],
+  "version": 4
 }
