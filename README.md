@@ -187,3 +187,12 @@ screen /dev/tty.usbmodem* 115200
 | [`etc/tn1235-overview-of-stlink-derivatives-stmicroelectronics.pdf`](etc/tn1235-overview-of-stlink-derivatives-stmicroelectronics.pdf) | TN1235: overview of ST-LINK derivatives |
 | [`etc/nucleo-l073rz-pinout.png`](etc/nucleo-l073rz-pinout.png) | Arduino (CN5/6/8/9) and Morpho (CN7/10) header pinout |
 | [`etc/stm32_eval-tools_portfolio.pdf`](etc/stm32_eval-tools_portfolio.pdf) | STM32 evaluation tools portfolio |
+
+## Reference links
+
+| Link | Description |
+| --- | --- |
+| [STM32L073RZ product page](https://www.st.com/en/microcontrollers-microprocessors/stm32l073rz.html) | ST's page for the MCU — datasheet, reference manual, errata, application notes, and tools |
+| [ARM-software/CMSIS-DSP](https://github.com/ARM-software/CMSIS-DSP) | Arm's DSP library (filters, FFT, matrix, statistics) with fixed-point `q7`/`q15`/`q31` kernels, which suit the FPU-less Cortex-M0+. Cloned locally at `../CMSIS-DSP`. |
+| [ARM-software/ComputeLibrary](https://github.com/ARM-software/ComputeLibrary) | Arm Compute Library — machine learning and computer vision kernels for Cortex-A CPUs (Neon/SVE) and Mali GPUs. Not usable on the Cortex-M0+. |
+| [ARM-software/optimized-routines](https://github.com/ARM-software/optimized-routines) | Arm's reference implementations of libm math functions and string/memory routines, mainly for AArch64 and AArch32; C libraries such as newlib and glibc carry versions of them. |
