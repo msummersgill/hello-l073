@@ -153,6 +153,33 @@ screen /dev/tty.usbmodem* 115200
 
 ## Reference documents
 
+### STM32L073RZ
+
+| File | Description |
+| --- | --- |
+| [`etc/stm32l073rz.pdf`](etc/stm32l073rz.pdf) | Datasheet — pinout, alternate functions, electrical characteristics |
+| [`etc/rm0367-ultralowpower-stm32l0x3-advanced-armbased-32bit-mcus-stmicroelectronics.pdf`](etc/rm0367-ultralowpower-stm32l0x3-advanced-armbased-32bit-mcus-stmicroelectronics.pdf) | RM0367: STM32L0x3 reference manual — peripheral registers |
+| [`etc/pm0223-stm32-cortexm0-mcus-programming-manual-stmicroelectronics.pdf`](etc/pm0223-stm32-cortexm0-mcus-programming-manual-stmicroelectronics.pdf) | PM0223: Cortex-M0+ programming manual — core, instruction set, SysTick, NVIC |
+| [`etc/es0292-stm32l07xxxl08xxx-device-errata-stmicroelectronics.pdf`](etc/es0292-stm32l07xxxl08xxx-device-errata-stmicroelectronics.pdf) | ES0292: STM32L07x/L08x errata |
+
+### Application notes
+
+| File | Description |
+| --- | --- |
+| [`etc/an2834-how-to-optimize-the-adc-accuracy-in-the-stm32-mcus-stmicroelectronics.pdf`](etc/an2834-how-to-optimize-the-adc-accuracy-in-the-stm32-mcus-stmicroelectronics.pdf) | AN2834: optimizing ADC accuracy |
+| [`etc/cd00211314-how-to-optimize-the-adc-accuracy-in-the-stm32-mcus-stmicroelectronics.pdf`](etc/cd00211314-how-to-optimize-the-adc-accuracy-in-the-stm32-mcus-stmicroelectronics.pdf) | AN2834 under its older document ID (near-duplicate) |
+| [`etc/an4629-adc-hardware-oversampling-for-microcontrollers-of-the-stm32-l0-and-l4-series-stmicroelectronics.pdf`](etc/an4629-adc-hardware-oversampling-for-microcontrollers-of-the-stm32-l0-and-l4-series-stmicroelectronics.pdf) | AN4629: ADC hardware oversampling on STM32L0/L4 |
+| [`etc/an5537-how-to-use-adc-oversampling-techniques-to-improve-signaltonoise-ratio-on-stm32-mcus-stmicroelectronics.pdf`](etc/an5537-how-to-use-adc-oversampling-techniques-to-improve-signaltonoise-ratio-on-stm32-mcus-stmicroelectronics.pdf) | AN5537: ADC oversampling to improve SNR |
+| [`etc/an3126-how-to-use-dac-for-audio-and-waveform-generation-on-stm32-mcus-and-mpus-stmicroelectronics.pdf`](etc/an3126-how-to-use-dac-for-audio-and-waveform-generation-on-stm32-mcus-and-mpus-stmicroelectronics.pdf) | AN3126: DAC audio and waveform generation |
+| [`etc/an4566-how-to-extend-the-dac-performance-on-stm32-mcus-stmicroelectronics.pdf`](etc/an4566-how-to-extend-the-dac-performance-on-stm32-mcus-stmicroelectronics.pdf) | AN4566: extending DAC performance |
+| [`etc/an4013-introduction-to-timers-for-stm32-mcus-stmicroelectronics.pdf`](etc/an4013-introduction-to-timers-for-stm32-mcus-stmicroelectronics.pdf) | AN4013: introduction to STM32 timers |
+| [`etc/an5647-the-goertzel-algorithm-to-compute-individual-terms-of-the-discrete-fourier-transform-dft-in-stm32-products-stmicroelectronics.pdf`](etc/an5647-the-goertzel-algorithm-to-compute-individual-terms-of-the-discrete-fourier-transform-dft-in-stm32-products-stmicroelectronics.pdf) | AN5647: Goertzel algorithm for single DFT terms |
+| [`etc/an2867-guidelines-for-oscillator-design-on-stm8afals-and-stm32-mcusmpus-stmicroelectronics.pdf`](etc/an2867-guidelines-for-oscillator-design-on-stm8afals-and-stm32-mcusmpus-stmicroelectronics.pdf) | AN2867: oscillator design guidelines |
+| [`etc/an4879-introduction-to-usb-hardware-and-pcb-guidelines-using-stm32-mcus-stmicroelectronics.pdf`](etc/an4879-introduction-to-usb-hardware-and-pcb-guidelines-using-stm32-mcus-stmicroelectronics.pdf) | AN4879: USB hardware and PCB guidelines |
+| [`etc/an5036-guidelines-for-thermal-management-on-stm32-mcus-and-mpus-stmicroelectronics.pdf`](etc/an5036-guidelines-for-thermal-management-on-stm32-mcus-and-mpus-stmicroelectronics.pdf) | AN5036: thermal management guidelines |
+
+### Board and tools
+
 | File | Description |
 | --- | --- |
 | [`etc/DB_nucleo-l073rz.pdf`](etc/DB_nucleo-l073rz.pdf) | NUCLEO-L073RZ data brief |
