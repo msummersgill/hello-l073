@@ -1,0 +1,10 @@
+--target=arm-none-eabi
+-mcpu=cortex-m0plus
+-mthumb
+-std=gnu11
+-DSTM32L073xx
+-Iinclude
+-Icmsis/Include
+-Icmsis/Core/Include
+-isystem
+/Users/matthew14786/Library/xPacks/@xpack-dev-tools/arm-none-eabi-gcc/15.2.1-1.1.1/.content/arm-none-eabi/include

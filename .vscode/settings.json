@@ -1,0 +1,7 @@
+{
+    "stm32-for-vscode.armToolchainPath": "/Users/matthew14786/Library/xPacks/@xpack-dev-tools/arm-none-eabi-gcc/15.2.1-1.1.1/.content/bin",
+    "stm32-for-vscode.openOCDPath": "/Users/matthew14786/Library/xPacks/@xpack-dev-tools/openocd/0.12.0-7.1/.content/bin/openocd",
+    "stm32-for-vscode.makePath": "/usr/bin/make",
+    "cortex-debug.armToolchainPath": "/Users/matthew14786/Library/xPacks/@xpack-dev-tools/arm-none-eabi-gcc/15.2.1-1.1.1/.content/bin",
+    "cortex-debug.openocdPath": "/Users/matthew14786/Library/xPacks/@xpack-dev-tools/openocd/0.12.0-7.1/.content/bin/openocd"
+}
