@@ -1,6 +1,7 @@
 // Bare-metal "hello world" for the NUCLEO-L073RZ: blinks LD2 and prints a
-// counter over the ST-LINK virtual COM port. No HAL; registers are accessed
-// directly through the CMSIS device header.
+// counter over the ST-LINK virtual COM port. Pressing the user button (B1)
+// restarts the counter. No HAL; registers are accessed directly through the
+// CMSIS device header.
 
 #include "stm32l0xx.h"
 
@@ -14,6 +15,18 @@ static volatile uint32_t ticks;
 // the vector table entry in the startup file.
 void SysTick_Handler(void) {
   ticks++;
+}
+
+// Set by the button interrupt, cleared by main once it has reset the counter.
+static volatile uint8_t reset_requested;
+
+// Shared handler for EXTI lines 4-15; only line 13 (the button) is enabled.
+void EXTI4_15_IRQHandler(void) {
+  if (EXTI->PR & EXTI_PR_PIF13) {
+    // The pending bit is cleared by writing 1 to it, not 0.
+    EXTI->PR = EXTI_PR_PIF13;
+    reset_requested = 1;
+  }
 }
 
 // Busy-wait for the given number of milliseconds. The unsigned subtraction
@@ -46,6 +59,24 @@ static void led_init(void) {
   RCC->IOPENR |= RCC_IOPENR_GPIOAEN;
   // MODER has 2 bits per pin: 01 = general-purpose output.
   GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE5) | GPIO_MODER_MODE5_0;
+}
+
+// B1 on PC13: reads low while pressed. An interrupt on the falling edge
+// catches presses that happen while main is inside delay_ms.
+static void button_init(void) {
+  RCC->IOPENR |= RCC_IOPENR_GPIOCEN;
+  // Pins reset to analog mode on the L0; MODER = 00 makes PC13 a digital
+  // input. Enable the internal pull-up so the pin idles high.
+  GPIOC->MODER &= ~GPIO_MODER_MODE13;
+  GPIOC->PUPDR = (GPIOC->PUPDR & ~GPIO_PUPDR_PUPD13) | GPIO_PUPDR_PUPD13_0;
+  // Route EXTI line 13 to port C (each line can come from any port's pin 13).
+  RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+  SYSCFG->EXTICR[3] = (SYSCFG->EXTICR[3] & ~SYSCFG_EXTICR4_EXTI13)
+                    | SYSCFG_EXTICR4_EXTI13_PC;
+  // Unmask line 13, trigger on the falling (press) edge, enable the IRQ.
+  EXTI->FTSR |= EXTI_FTSR_FT13;
+  EXTI->IMR |= EXTI_IMR_IM13;
+  NVIC_EnableIRQ(EXTI4_15_IRQn);
 }
 
 // USART2 on PA2 (TX) / PA3 (RX), routed to the ST-LINK virtual COM port.
@@ -88,11 +119,18 @@ int main(void) {
   // Clock first: the UART baud divider depends on SystemCoreClock.
   clock_init();
   led_init();
+  button_init();
   uart_init();
   uart_puts("L073RZ bare-metal up\r\n");
 
   // Toggle the LED and print the loop count every 500 ms, forever.
+  // Pressing B1 restarts the count from 0 on the next tick.
   for (uint32_t n = 0;; n++) {
+    if (reset_requested) {
+      reset_requested = 0;
+      n = 0;
+      uart_puts("reset\r\n");
+    }
     GPIOA->ODR ^= GPIO_ODR_OD5;
     uart_puts("tick ");
     uart_putu(n);
