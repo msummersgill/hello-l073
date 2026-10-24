@@ -8,14 +8,20 @@ On reset it:
 
 1. Switches the system clock from the 2.1 MHz MSI to the 16 MHz HSI and starts a 1 ms SysTick.
 2. Blinks LD2 (PA5) every 500 ms.
-3. Prints a counter over USART2 (PA2/PA3), which is routed to the ST-LINK virtual COM port:
+3. Prints a counter and the supply voltage over USART2 (PA2/PA3), which is routed to the ST-LINK virtual COM port:
 
    ```
    L073RZ bare-metal up
-   tick 0
-   tick 1
+   tick 0 vdd 3298 mV raw 1520
+   tick 1 vdd 3300 mV raw 1519
    ...
    ```
+
+4. Restarts the counter from 0 when the user button B1 (PC13) is pressed, printing `reset`.
+
+The supply voltage is measured with the ADC against the internal reference (VREFINT, channel 17):
+`VDD = 3000 mV × VREFINT_CAL / reading`, where `VREFINT_CAL` is the factory reading taken at 3.0 V, stored at `0x1FF80078`.
+Strictly this is VDDA, which the Nucleo ties to VDD. Expect about 3300 mV, within ±1–2%.
 
 ## Reference links
 
@@ -30,7 +36,7 @@ On reset it:
 
 ![NUCLEO-L073RZ Arduino and Morpho header pinout](etc/nucleo-l073rz-pinout.png)
 
-From UM1724. Pins used by this project: PA5 (LD2, Arduino D13), PA2/PA3 (USART2 TX/RX, Arduino D1/D0).
+From UM1724. Pins used by this project: PA5 (LD2, Arduino D13), PA2/PA3 (USART2 TX/RX, Arduino D1/D0), PC13 (user button B1).
 By default PA2/PA3 are connected to the ST-LINK virtual COM port rather than the Arduino headers (see the USART communication section of UM1724 for the solder bridges that change this).
 
 ### Arduino connectors
@@ -139,6 +145,9 @@ make -f STM32Make.make clean   # delete build/
 ```
 
 For debugging, use the **Debug STM32** (launch) or **Attach STM32** configurations in VS Code.
+
+- **Live Watch** is enabled in both configurations. Add `loop_count`, `ticks`, or `reset_requested` in the Live Watch panel to see them update while the CPU runs, without halting it. Only globals and statics can be live-watched.
+- The Cortex-M0+ has only **4 hardware breakpoints**, and code in flash can't use software breakpoints. Keep at most 3 enabled so stepping has one spare; otherwise GDB fails with `Cannot insert hardware breakpoint ... Remote failure reply: 0E`.
 
 ## Serial output
 

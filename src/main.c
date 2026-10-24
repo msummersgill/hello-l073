@@ -7,6 +7,12 @@
 
 #define BAUD 115200
 
+// Factory calibration of the internal voltage reference: the 12-bit ADC
+// reading of VREFINT taken at VDDA = 3.0 V (datasheet, "Embedded internal
+// reference voltage"). Not defined by the CMSIS header.
+#define VREFINT_CAL (*(const uint16_t *)0x1FF80078)
+#define VREFINT_CAL_MV 3000
+
 // Milliseconds since SysTick was started. volatile because it is written by
 // the interrupt handler and read by main-line code.
 static volatile uint32_t ticks;
@@ -98,6 +104,43 @@ static void uart_init(void) {
   USART2->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
 }
 
+// ADC set up to read the internal reference (VREFINT, channel 17). VREFINT is
+// a fixed ~1.2 V, so its reading against the supply tells us the supply.
+static void adc_init(void) {
+  RCC->APB2ENR |= RCC_APB2ENR_ADCEN;
+  // Clock the ADC from PCLK / 2 (8 MHz) rather than the asynchronous clock.
+  ADC1->CFGR2 = (ADC1->CFGR2 & ~ADC_CFGR2_CKMODE) | ADC_CFGR2_CKMODE_0;
+  // Calibrate while the ADC is disabled; ADCAL clears itself when done.
+  ADC1->CR |= ADC_CR_ADCAL;
+  while (ADC1->CR & ADC_CR_ADCAL);
+  // Enable the ADC. ADRDY is cleared by writing 1, then set by hardware once
+  // the ADC is ready to convert.
+  ADC1->ISR = ADC_ISR_ADRDY;
+  ADC1->CR |= ADC_CR_ADEN;
+  while (!(ADC1->ISR & ADC_ISR_ADRDY));
+  // VREFINT needs at least 10 us of sampling; the longest setting (160.5
+  // cycles at 8 MHz, about 20 us) covers it.
+  ADC1->CHSELR = ADC_CHSELR_CHSEL17;
+  ADC1->SMPR = ADC_SMPR_SMP;
+  // Connect VREFINT to the ADC and give it its 3 ms worst-case start-up time.
+  ADC->CCR |= ADC_CCR_VREFEN;
+  delay_ms(3);
+}
+
+// Take one 12-bit ADC reading of VREFINT.
+static uint32_t read_vrefint(void) {
+  ADC1->CR |= ADC_CR_ADSTART;
+  while (!(ADC1->ISR & ADC_ISR_EOC));
+  // Reading DR also clears EOC.
+  return ADC1->DR;
+}
+
+// Convert a VREFINT reading to the supply (VDDA, tied to VDD on the Nucleo)
+// in millivolts by scaling the factory reading taken at 3.0 V.
+static uint32_t vdd_mv(uint32_t vrefint) {
+  return VREFINT_CAL_MV * VREFINT_CAL / vrefint;
+}
+
 // Send one byte, waiting until the transmit data register is empty.
 static void uart_putc(char c) {
   while (!(USART2->ISR & USART_ISR_TXE));
@@ -125,9 +168,11 @@ int main(void) {
   led_init();
   button_init();
   uart_init();
+  adc_init();
   uart_puts("L073RZ bare-metal up\r\n");
 
-  // Toggle the LED and print the loop count every 500 ms, forever.
+  // Toggle the LED and print the loop count and supply voltage every 500 ms,
+  // forever.
   // Pressing B1 restarts the count from 0 on the next tick.
   for (loop_count = 0;; loop_count++) {
     if (reset_requested) {
@@ -138,6 +183,11 @@ int main(void) {
     GPIOA->ODR ^= GPIO_ODR_OD5;
     uart_puts("tick ");
     uart_putu(loop_count);
+    uint32_t vrefint = read_vrefint();
+    uart_puts(" vdd ");
+    uart_putu(vdd_mv(vrefint));
+    uart_puts(" mV raw ");
+    uart_putu(vrefint);
     uart_puts("\r\n");
     delay_ms(500);
   }
