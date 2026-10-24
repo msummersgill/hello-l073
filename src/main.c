@@ -20,6 +20,10 @@ void SysTick_Handler(void) {
 // Set by the button interrupt, cleared by main once it has reset the counter.
 static volatile uint8_t reset_requested;
 
+// Loop count printed by main. File-scope and volatile so the debugger's Live
+// Watch can read it from memory while the CPU runs.
+static volatile uint32_t loop_count;
+
 // Shared handler for EXTI lines 4-15; only line 13 (the button) is enabled.
 void EXTI4_15_IRQHandler(void) {
   if (EXTI->PR & EXTI_PR_PIF13) {
@@ -125,15 +129,15 @@ int main(void) {
 
   // Toggle the LED and print the loop count every 500 ms, forever.
   // Pressing B1 restarts the count from 0 on the next tick.
-  for (uint32_t n = 0;; n++) {
+  for (loop_count = 0;; loop_count++) {
     if (reset_requested) {
       reset_requested = 0;
-      n = 0;
+      loop_count = 0;
       uart_puts("reset\r\n");
     }
     GPIOA->ODR ^= GPIO_ODR_OD5;
     uart_puts("tick ");
-    uart_putu(n);
+    uart_putu(loop_count);
     uart_puts("\r\n");
     delay_ms(500);
   }

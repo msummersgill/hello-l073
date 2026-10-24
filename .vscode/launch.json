@@ -13,7 +13,11 @@
             "device": "cmsis/Source/stm32l073",
             "configFiles": [
                 "openocd.cfg"
-            ]
+            ],
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 4
+            }
         },
         {
             "showDevDebugOutput": "parsed",
@@ -27,7 +31,11 @@
             "device": "cmsis/Source/stm32l073",
             "configFiles": [
                 "openocd.cfg"
-            ]
+            ],
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 4
+            }
         }
     ]
 }
