@@ -4,7 +4,9 @@ Bare-metal "hello world" for the [NUCLEO-L073RZ](https://www.st.com/en/evaluatio
 (STM32L073RZ, Cortex-M0+). No HAL — registers are accessed directly through the
 CMSIS device header.
 
-On reset it:
+![NUCLEO-L073RZ running the firmware, with the serial output in VS Code](etc/nucleo-l073rz-running.jpg)
+
+On boot-up it:
 
 1. Switches the system clock from the 2.1 MHz MSI to the 16 MHz HSI and starts a 1 ms SysTick.
 2. Blinks LD2 (PA5) every 500 ms.
@@ -22,96 +24,6 @@ On reset it:
 The supply voltage is measured with the ADC against the internal reference (VREFINT, channel 17):
 `VDD = 3000 mV × VREFINT_CAL / reading`, where `VREFINT_CAL` is the factory reading taken at 3.0 V, stored at `0x1FF80078`.
 Strictly this is VDDA, which the Nucleo ties to VDD. Expect about 3300 mV, within ±1–2%.
-
-## Reference links
-
-| Link | Description |
-| --- | --- |
-| [STM32L073RZ product page](https://www.st.com/en/microcontrollers-microprocessors/stm32l073rz.html) | ST's page for the MCU — datasheet, reference manual, errata, application notes, and tools |
-| [ARM-software/CMSIS-DSP](https://github.com/ARM-software/CMSIS-DSP) | Arm's DSP library (filters, FFT, matrix, statistics) with fixed-point `q7`/`q15`/`q31` kernels, which suit the FPU-less Cortex-M0+. |
-| [ARM-software/optimized-routines](https://github.com/ARM-software/optimized-routines) | Arm's reference implementations of libm math functions and string/memory routines, mainly for AArch64 and AArch32; C libraries such as newlib and glibc carry versions of them. |
-
-
-## Pinout
-
-![NUCLEO-L073RZ Arduino and Morpho header pinout](etc/nucleo-l073rz-pinout.png)
-
-From UM1724. Pins used by this project: PA5 (LD2, Arduino D13), PA2/PA3 (USART2 TX/RX, Arduino D1/D0), PC13 (user button B1).
-By default PA2/PA3 are connected to the ST-LINK virtual COM port rather than the Arduino headers (see the USART communication section of UM1724 for the solder bridges that change this).
-
-### Arduino connectors
-
-From UM1724, Table 18.
-
-| Connector | Pin | Pin name | STM32 pin | Function |
-| --- | --- | --- | --- | --- |
-| **Left connectors** | | | | |
-| CN6 power | 1 | NC | - | - |
-| CN6 power | 2 | IOREF | - | 3.3V Ref |
-| CN6 power | 3 | RESET | NRST | RESET |
-| CN6 power | 4 | +3.3V | - | 3.3V input/output |
-| CN6 power | 5 | +5V | - | 5V output |
-| CN6 power | 6 | GND | - | ground |
-| CN6 power | 7 | GND | - | ground |
-| CN6 power | 8 | VIN | - | Power input |
-| CN8 analog | 1 | A0 | PA0 | ADC_IN0 |
-| CN8 analog | 2 | A1 | PA1 | ADC_IN1 |
-| CN8 analog | 3 | A2 | PA4 | ADC_IN4 |
-| CN8 analog | 4 | A3 | PB0 | ADC_IN8 |
-| CN8 analog | 5 | A4 | PC1 or PB9¹ | ADC_IN11 (PC1) or I2C1_SDA (PB9) |
-| CN8 analog | 6 | A5 | PC0 or PB8¹ | ADC_IN10 (PC0) or I2C1_SCL (PB8) |
-| **Right connectors** | | | | |
-| CN5 digital | 10 | D15 | PB8 | I2C1_SCL |
-| CN5 digital | 9 | D14 | PB9 | I2C1_SDA |
-| CN5 digital | 8 | AREF | - | AVDD |
-| CN5 digital | 7 | GND | - | ground |
-| CN5 digital | 6 | D13 | PA5 | SPI1_SCK |
-| CN5 digital | 5 | D12 | PA6 | SPI1_MISO |
-| CN5 digital | 4 | D11 | PA7 | TIM22_CH2 or SPI1_MOSI |
-| CN5 digital | 3 | D10 | PB6 | SPI1_CS |
-| CN5 digital | 2 | D9 | PC7 | TIM3_CH2 |
-| CN5 digital | 1 | D8 | PA9 | - |
-| CN9 digital | 8 | D7 | PA8 | - |
-| CN9 digital | 7 | D6 | PB10 | TIM2_CH3 |
-| CN9 digital | 6 | D5 | PB4 | TIM3_CH1 |
-| CN9 digital | 5 | D4 | PB5 | - |
-| CN9 digital | 4 | D3 | PB3 | TIM2_CH2 |
-| CN9 digital | 3 | D2 | PA10 | - |
-| CN9 digital | 2 | D1 | PA2 | USART2_TX |
-| CN9 digital | 1 | D0 | PA3 | USART2_RX |
-
-¹ Selected by solder bridges; see UM1724, Table 10: Solder bridges.
-
-### ST morpho connectors
-
-From UM1724, Table 30.
-
-| CN7 odd pin | Name | Name | CN7 even pin | CN10 odd pin | Name | Name | CN10 even pin |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | PC10 | PC11 | 2 | 1 | PC9 | PC8 | 2 |
-| 3 | PC12 | PD2 | 4 | 3 | PB8 | PC6 | 4 |
-| 5 | VDD | E5V | 6 | 5 | PB9 | PC5 | 6 |
-| 7 | BOOT0¹ | GND | 8 | 7 | AVDD | U5V² | 8 |
-| 9 | - | - | 10 | 9 | GND | - | 10 |
-| 11 | - | IOREF | 12 | 11 | PA5 | PA12 | 12 |
-| 13 | PA13³ | RESET | 14 | 13 | PA6 | PA11 | 14 |
-| 15 | PA14³ | +3.3V | 16 | 15 | PA7 | PB12 | 16 |
-| 17 | PA15 | +5V | 18 | 17 | PB6 | PB11 | 18 |
-| 19 | GND | GND | 20 | 19 | PC7 | GND | 20 |
-| 21 | PB7 | GND | 22 | 21 | PA9 | PB2 | 22 |
-| 23 | PC13 | VIN | 24 | 23 | PA8 | PB1 | 24 |
-| 25 | PC14 | - | 26 | 25 | PB10 | PB15 | 26 |
-| 27 | PC15 | PA0 | 28 | 27 | PB4 | PB14 | 28 |
-| 29 | PH0 | PA1 | 30 | 29 | PB5 | PB13 | 30 |
-| 31 | PH1 | PA4 | 32 | 31 | PB3 | AGND | 32 |
-| 33 | VLCD | PB0 | 34 | 33 | PA10 | PC4 | 34 |
-| 35 | PC2 | PC1 or PB9⁴ | 36 | 35 | PA2 | - | 36 |
-| 37 | PC3 | PC0 or PB8⁴ | 38 | 37 | PA3 | - | 38 |
-
-1. The default state of BOOT0 is LOW. It can be set to HIGH when a jumper is on pin 5-7 of CN7. Two unused jumpers are available on CN11 and CN12 (bottom side of the board).
-2. U5V is 5 V power from the ST-LINK/V2-1 USB connector and it rises before +5V.
-3. PA13 and PA14 share with SWD signals connected to ST-LINK/V2-1; it is not recommended to use them as IO pins if the ST-LINK part is not cut.
-4. Refer to UM1724, Table 10: Solder bridges.
 
 ## Requirements
 
@@ -180,22 +92,6 @@ screen /dev/tty.usbmodem* 115200
 | [`etc/pm0223-stm32-cortexm0-mcus-programming-manual-stmicroelectronics.pdf`](etc/pm0223-stm32-cortexm0-mcus-programming-manual-stmicroelectronics.pdf) | PM0223: Cortex-M0+ programming manual — core, instruction set, SysTick, NVIC |
 | [`etc/es0292-stm32l07xxxl08xxx-device-errata-stmicroelectronics.pdf`](etc/es0292-stm32l07xxxl08xxx-device-errata-stmicroelectronics.pdf) | ES0292: STM32L07x/L08x errata |
 
-### Application notes
-
-| File | Description |
-| --- | --- |
-| [`etc/an2834-how-to-optimize-the-adc-accuracy-in-the-stm32-mcus-stmicroelectronics.pdf`](etc/an2834-how-to-optimize-the-adc-accuracy-in-the-stm32-mcus-stmicroelectronics.pdf) | AN2834: optimizing ADC accuracy |
-| [`etc/cd00211314-how-to-optimize-the-adc-accuracy-in-the-stm32-mcus-stmicroelectronics.pdf`](etc/cd00211314-how-to-optimize-the-adc-accuracy-in-the-stm32-mcus-stmicroelectronics.pdf) | AN2834 under its older document ID (near-duplicate) |
-| [`etc/an4629-adc-hardware-oversampling-for-microcontrollers-of-the-stm32-l0-and-l4-series-stmicroelectronics.pdf`](etc/an4629-adc-hardware-oversampling-for-microcontrollers-of-the-stm32-l0-and-l4-series-stmicroelectronics.pdf) | AN4629: ADC hardware oversampling on STM32L0/L4 |
-| [`etc/an5537-how-to-use-adc-oversampling-techniques-to-improve-signaltonoise-ratio-on-stm32-mcus-stmicroelectronics.pdf`](etc/an5537-how-to-use-adc-oversampling-techniques-to-improve-signaltonoise-ratio-on-stm32-mcus-stmicroelectronics.pdf) | AN5537: ADC oversampling to improve SNR |
-| [`etc/an3126-how-to-use-dac-for-audio-and-waveform-generation-on-stm32-mcus-and-mpus-stmicroelectronics.pdf`](etc/an3126-how-to-use-dac-for-audio-and-waveform-generation-on-stm32-mcus-and-mpus-stmicroelectronics.pdf) | AN3126: DAC audio and waveform generation |
-| [`etc/an4566-how-to-extend-the-dac-performance-on-stm32-mcus-stmicroelectronics.pdf`](etc/an4566-how-to-extend-the-dac-performance-on-stm32-mcus-stmicroelectronics.pdf) | AN4566: extending DAC performance |
-| [`etc/an4013-introduction-to-timers-for-stm32-mcus-stmicroelectronics.pdf`](etc/an4013-introduction-to-timers-for-stm32-mcus-stmicroelectronics.pdf) | AN4013: introduction to STM32 timers |
-| [`etc/an5647-the-goertzel-algorithm-to-compute-individual-terms-of-the-discrete-fourier-transform-dft-in-stm32-products-stmicroelectronics.pdf`](etc/an5647-the-goertzel-algorithm-to-compute-individual-terms-of-the-discrete-fourier-transform-dft-in-stm32-products-stmicroelectronics.pdf) | AN5647: Goertzel algorithm for single DFT terms |
-| [`etc/an2867-guidelines-for-oscillator-design-on-stm8afals-and-stm32-mcusmpus-stmicroelectronics.pdf`](etc/an2867-guidelines-for-oscillator-design-on-stm8afals-and-stm32-mcusmpus-stmicroelectronics.pdf) | AN2867: oscillator design guidelines |
-| [`etc/an4879-introduction-to-usb-hardware-and-pcb-guidelines-using-stm32-mcus-stmicroelectronics.pdf`](etc/an4879-introduction-to-usb-hardware-and-pcb-guidelines-using-stm32-mcus-stmicroelectronics.pdf) | AN4879: USB hardware and PCB guidelines |
-| [`etc/an5036-guidelines-for-thermal-management-on-stm32-mcus-and-mpus-stmicroelectronics.pdf`](etc/an5036-guidelines-for-thermal-management-on-stm32-mcus-and-mpus-stmicroelectronics.pdf) | AN5036: thermal management guidelines |
-
 ### Board and tools
 
 | File | Description |
@@ -206,3 +102,10 @@ screen /dev/tty.usbmodem* 115200
 | [`etc/nucleo-l073rz-pinout.png`](etc/nucleo-l073rz-pinout.png) | Arduino (CN5/6/8/9) and Morpho (CN7/10) header pinout |
 | [`etc/stm32_eval-tools_portfolio.pdf`](etc/stm32_eval-tools_portfolio.pdf) | STM32 evaluation tools portfolio |
 
+## Reference links
+
+| Link | Description |
+| --- | --- |
+| [STM32L073RZ product page](https://www.st.com/en/microcontrollers-microprocessors/stm32l073rz.html) | ST's page for the MCU — datasheet, reference manual, errata, application notes, and tools |
+| [ARM-software/CMSIS-DSP](https://github.com/ARM-software/CMSIS-DSP) | Arm's DSP library (filters, FFT, matrix, statistics) with fixed-point `q7`/`q15`/`q31` kernels, which suit the FPU-less Cortex-M0+. |
+| [ARM-software/optimized-routines](https://github.com/ARM-software/optimized-routines) | Arm's reference implementations of libm math functions and string/memory routines, mainly for AArch64 and AArch32; C libraries such as newlib and glibc carry versions of them. |
