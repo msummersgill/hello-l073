@@ -109,3 +109,4 @@ screen /dev/tty.usbmodem* 115200
 | [STM32L073RZ product page](https://www.st.com/en/microcontrollers-microprocessors/stm32l073rz.html) | ST's page for the MCU — datasheet, reference manual, errata, application notes, and tools |
 | [ARM-software/CMSIS-DSP](https://github.com/ARM-software/CMSIS-DSP) | Arm's DSP library (filters, FFT, matrix, statistics) with fixed-point `q7`/`q15`/`q31` kernels, which suit the FPU-less Cortex-M0+. |
 | [ARM-software/optimized-routines](https://github.com/ARM-software/optimized-routines) | Arm's reference implementations of libm math functions and string/memory routines, mainly for AArch64 and AArch32; C libraries such as newlib and glibc carry versions of them. |
+| [Matt Nite Bare Minimum STM32 Toolchain Setup](https://mattnite.net/blog/bare-minimum-stm32-toolchain-setup/) | Reference implementation of one of the Zig maintainers experimenting with this device. |
